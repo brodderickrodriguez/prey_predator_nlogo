@@ -1,15 +1,9 @@
-; Disclaimer: 99% of this code is not mine. It is unchanged from the common Prey Predator model
+; Disclaimer: 99.9% of this code is not mine. It is unchanged from the common Prey Predator model
 ; Copyright 1997 Uri Wilensky.
 ; See Info tab for full copyright and license.
 
 
-globals [ max-sheep
-  max-episode-ticks
-  sheep-population
-  wolf-population
-  grass-population
-  sustainability-time-series
-  sustainability-std ]
+globals [ max-sheep max-episode-ticks ]
 
 ; Sheep and wolves are both breeds of turtle.
 breed [ sheep a-sheep ]  ; sheep is its own plural, so we use "a-sheep" as the singular.
@@ -22,10 +16,6 @@ to setup
 
   set max-sheep 30000
   set max-episode-ticks 5000
-
-  set sheep-population []
-  set wolf-population []
-  set grass-population []
 
   ask patches [
     set pcolor one-of [ green brown ]
@@ -58,11 +48,11 @@ end
 
 to go
   ; stop the simulation of no wolves or sheep
-  if not any? turtles [ post-process stop ]
+  if not any? turtles [ stop ]
   ; stop the model if there are no wolves and the number of sheep gets very large
-  if not any? wolves or count sheep > max-sheep [ post-process  stop ]
+  if not any? wolves or count sheep > max-sheep [ stop ]
 
-  if ticks >= max-episode-ticks [ post-process stop ]
+  if ticks >= max-episode-ticks [ stop ]
 
   ask sheep [
     move
@@ -82,26 +72,10 @@ to go
   ask patches [ grow-grass ]
   ; set grass count patches with [pcolor = green]
   tick
+
   display-labels
-
-  update-pop-lists
-
 end
 
-to update-pop-lists
-  set sheep-population lput (count sheep) sheep-population
-  set wolf-population lput (count wolves) wolf-population
-  set grass-population lput (count grass) grass-population
-end
-
-to post-process
-  let wolf-pop-std standard-deviation wolf-population
-  let sheep-pop-std standard-deviation sheep-population
-  let grass-pop-std standard-deviation grass-population
-  let time-difference abs (max-episode-ticks - ticks)
-  set sustainability-std wolf-pop-std + sheep-pop-std + grass-pop-std + time-difference
-  print sustainability-std
-end
 
 to move  ; turtle procedure
   rt random 50
@@ -252,7 +226,7 @@ initial-number-wolves
 initial-number-wolves
 0
 250
-250.0
+38.0
 1
 1
 NIL
@@ -267,7 +241,7 @@ wolf-gain-from-food
 wolf-gain-from-food
 0.0
 100.0
-100.0
+12.0
 1.0
 1
 NIL
